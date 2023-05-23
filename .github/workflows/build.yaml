@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    paths-ignore:
+        - 'docs/*'
+        - 'dependabot/*'
+
+jobs:
+  build:
+    name: Build docker image, run tests and linters
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create .env file
+        run: |
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
+          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} > .env
+          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} > .env
+      - name: Login to Docker
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Build image run tests, linters
+        run: make lambda ci
+        env:
+          DOCKER_BUILDKIT: 1
+          DOCKER_COMPOSE_FILE: build-compose.yml
+      - name: Cleanup files
+        run: rm .env
+        if: always()
+      - name: Post build
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "Build"
+          description: "Build docker image, run tests and linters"
+          username: "darwin"
