@@ -1,0 +1,27 @@
+---
+version: '3'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: lambda/Dockerfile
+    image: collab/core:ci
+    volumes:
+      - .:/var/task
+    depends_on:
+      - postgres
+    environment:
+      - SETTINGS_MODULE=collab.settings.base
+      - POSTGRES_HOST=postgres
+      - DATABASE_URL=postgres://postgres:@postgres/postgres
+      - SITE_ID=1
+    command: tail -f /dev/null
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  redis:
+    image: redis

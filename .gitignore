@@ -1,0 +1,61 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+*.rdb
+*.coverage
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*celerybeat-*
+*.pid
+
+# Custom files and folders #
+__pycache__
+.pytest_cache
+.idea/
+/media/
+/static
+celery-deamon-configurations
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+data/
+*.pgsql
+.aws
+
+# Secret Files #
+.env
