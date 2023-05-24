@@ -8,6 +8,7 @@ __all__ = ['urlpatterns']
 
 urlpatterns = [
     path('auth/', include(('users.urls', 'users'), namespace='auth')),
+    path('document/', include(('documents.urls', 'documents'), namespace='document')),
 ] + debug_toolbar_urlpatterns
 
 if settings.DEBUG:
