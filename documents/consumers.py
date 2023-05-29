@@ -36,7 +36,6 @@ class DocumentConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        # Leave document group
         await self.channel_layer.group_discard(
             self.document_group_name,
             self.channel_name
@@ -49,12 +48,9 @@ class DocumentConsumer(AsyncWebsocketConsumer):
         method = getattr(self, event_name, None)
         if method is not None:
             await method(event_data)
-        else:
-            pass
 
     async def viewer_join(self, event):
         data = event.get('data', None)
-        print('viewer_join received', data)
         await self.send(text_data=json.dumps({
             'type': 'viewer_join',
             'data': serialize_user(data),
@@ -62,7 +58,6 @@ class DocumentConsumer(AsyncWebsocketConsumer):
 
     async def viewer_leave(self, event):
         data = event.get('data', None)
-        print('viewer_leave received', data)
         await self.send(text_data=json.dumps({
             'type': 'viewer_leave',
             'data': serialize_user(data),
@@ -75,7 +70,16 @@ class DocumentConsumer(AsyncWebsocketConsumer):
             'title': title,
             'content': content,
         }
-        print('document_updated received', data)
+        await self.channel_layer.group_send(
+            self.document_group_name,
+            {
+                'type': 'send_document_update',
+                'data': data,
+            }
+        )
+
+    async def send_document_update(self, event):
+        data = event.get('data', None)
         await self.send(text_data=json.dumps({
             'type': 'document_updated',
             'data': data,
