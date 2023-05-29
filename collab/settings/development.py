@@ -15,3 +15,9 @@ INTERNAL_IPS = [
     '127.0.0.1',
     f'{ip[:-1]}1',
 ]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
